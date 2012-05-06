@@ -101,7 +101,7 @@ public class Security {
      * @param signedData the signed JSON string (signed, not encrypted)
      * @param signature the signature for the data, signed with the private key
      */
-    public static ArrayList<VerifiedPurchase> verifyPurchase(String signedData, String signature) {
+    public static ArrayList<VerifiedPurchase> verifyPurchase(String signedData, String signature, String publicKey) {
         if (signedData == null) {
             Log.e(TAG, "data is null");
             return null;
@@ -124,7 +124,7 @@ public class Security {
              * Generally, encryption keys / passwords should only be kept in memory
              * long enough to perform the operation they need to perform.
              */
-            String base64EncodedPublicKey = "your public key here";
+            String base64EncodedPublicKey = publicKey;
             PublicKey key = Security.generatePublicKey(base64EncodedPublicKey);
             verified = Security.verify(key, signedData, signature);
             if (!verified) {

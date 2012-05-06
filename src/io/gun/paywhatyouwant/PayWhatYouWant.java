@@ -17,6 +17,9 @@ import android.database.Cursor;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.TextView;
 
 public class PayWhatYouWant {
 	
@@ -213,9 +216,33 @@ public class PayWhatYouWant {
     public boolean askForDonation(int defaultValue, String title, String description){
     	LayoutInflater inflater = (LayoutInflater)
     		    context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    		    final View npView = inflater.inflate(R.layout.number_picker_pref, null);
+    		    //final View npView = inflater.inflate(R.layout.number_picker_pref, null);
+    			final View npView = inflater.inflate(R.layout.seeker, null);
     		    final NumberPicker np = (NumberPicker) npView.findViewById(R.id.pref_num_picker);
-    		    np.changeCurrent(defaultValue);
+    		    final SeekBar seeker = (SeekBar) npView.findViewById(R.id.seekbar);
+    		    final TextView donateAmount = (TextView) npView.findViewById(R.id.donateamount);
+    		    
+    		    seeker.setProgress(defaultValue);
+    		    donateAmount.setText("$" + new Integer(defaultValue).toString());
+    		    
+    		    seeker.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
+
+					@Override
+					public void onProgressChanged(SeekBar seekBar,
+							int progress, boolean fromUser) {
+						donateAmount.setText("$" + new Integer(progress).toString());
+						
+					}
+
+					@Override
+					public void onStartTrackingTouch(SeekBar seekBar) {
+						// Unused
+					}
+
+					@Override
+					public void onStopTrackingTouch(SeekBar seekBar) {
+						// Unused
+					}});
     		    
     		    new AlertDialog.Builder(activity)
     		        .setTitle(title)
@@ -224,8 +251,12 @@ public class PayWhatYouWant {
     		        .setPositiveButton("Donate!",
     		            new DialogInterface.OnClickListener() {
     		                public void onClick(DialogInterface dialog, int whichButton) {
-    		                	System.out.println(np.mCurrent);
-    		                	mBillingService.requestPurchase(CATALOG[np.mCurrent+1].sku, null);
+    		                	
+    		                	if(seeker.getProgress()<1){
+    		                		return;
+    		                	}
+    		                	
+    		                	mBillingService.requestPurchase(CATALOG[seeker.getProgress()-1].sku, null);
     		                }
     		            })
     		            

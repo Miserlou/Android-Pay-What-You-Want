@@ -490,7 +490,7 @@ public class BillingService extends Service implements ServiceConnection {
      */
     private void purchaseStateChanged(int startId, String signedData, String signature) {
         ArrayList<Security.VerifiedPurchase> purchases;
-        purchases = Security.verifyPurchase(signedData, signature);
+        purchases = Security.verifyPurchase(signedData, signature, getResources().getString(R.string.publicKey));
         if (purchases == null) {
             return;
         }
